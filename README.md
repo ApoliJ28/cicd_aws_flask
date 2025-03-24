@@ -19,4 +19,23 @@ sudo apt install python3
 sudo apt install python3-pip
 sudo apt install python3.12-venv`
 ```
-## 5. Ingresar a la carpeta opt y clonar el proyecto.
+## 5. Ingresar a la carpeta opt y clonar el proyecto y además otogar permiso al usuario ubuntu al directorio del proyecto.
+```
+sudo git clone "ruta de el repositorio a clonar"
+sudo chown -R ubuntu:ubuntu /nombre_de_la_ruta_de_tu_proyecto
+```
+## 6. El siguiente paso es crear la credencial de acceso rsa para el github actions, abajo el código y adicional guarda la key.
+```
+ssh-keygen -t rsa -b 4096 -C "nombre de tú proyecto"
+```
+- Ahora como se genero la llae ssh rsa
+```
+cat /home/ubuntu/.ssh/id_rsa.pub >> /home/ubuntu/.ssh/authorized_keys
+```
+Agregas la nueva llave a las llaves authorizadas del server para que cuando hagamos la integracion con git actions se pueda conectar al server sin problemas.
+## 7. Dentro del directorio del proyecto crear un entorno virtual y descargar las dependencias:
+```
+python3 -m venv venv
+source venv/bin/actívate
+sudo venv/bin/python3 -m pip install -r requirements.txt
+```
