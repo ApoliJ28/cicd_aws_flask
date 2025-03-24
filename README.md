@@ -55,12 +55,45 @@ Restart=always
 [Install]
 WantedBy=multi-user.target
 ```
-##9. Recargar los servicios para que linux reconozca el nuevo servicio antes creado:
+## 9. Recargar los servicios para que linux reconozca el nuevo servicio antes creado:
 ```
 sudo systemctl daemon-reload
 sudo systemctl start my-flask-app.service 
 ```
-##10. ir a github y crear las credenciales:
+## 10. ir a github y crear las credenciales:
 - EC2_PRIVATE_KEY = pega la key generada del rsa
 - EC2_HOST = dirección pública de la instancia de ec2
 - EC2_USER_NAME = al ser ubuntu el usuario se llama igual: ubuntu
+## 11. Ir a github actions y crear un workflow con el siguiente código:
+```
+name: Deploy to EC2
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Deploy to EC2
+      env:
+        PRIVATE_KEY: ${{ secrets.EC2_PRIVATE_KEY }}
+        HOST_NAME: ${{ secrets.EC2_HOST }}
+        USER_NAME: ${{ secrets.EC2_USER_NAME }}
+      run: |
+        echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
+        ssh -v -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOST_NAME} '
+          cd /opt/nombre_del_directorio_de_tu_proyecto &&
+          git pull origin main &&
+          source venv/bin/activate &&
+          sudo venv/bin/python3 -m pip install -r requirements.txt &&
+          sudo systemctl restart my-flask-app
+        '
+```
+Y con esto ya estaria listo la integración con git y la instancia de AWS.
