@@ -17,7 +17,7 @@ def foo():
     return jsonify({"message": "Hello, Foo"})
 
 @app.route('/api/apoli', methods=['GET'])
-def foo():
+def apoli():
     return jsonify({"message": "Hello, apoli"})
 
 if __name__ == '__main__':
