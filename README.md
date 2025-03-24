@@ -39,3 +39,28 @@ python3 -m venv venv
 source venv/bin/actívate
 sudo venv/bin/python3 -m pip install -r requirements.txt
 ```
+## 8. Crear un servicio para la ejecución del servidor en la ruta: /etc/systemd/system/nombre-del-servicio.service con nano en modo super usuario.
+```
+[Unit]
+Description=Nombre de tú Servicio Aquí
+After=network.target
+
+[Service]
+User=ubuntu
+WorkingDirectory=/opt/nombre_del_directorio_de_tu_proyecto
+Environment="PATH=/opt/nombre_del_directorio_de_tu_proyecto/venv/bin:/usr/bin"
+ExecStart=/opt/nombre_del_directorio_de_tu_proyecto/venv/bin/python3 /opt/nombre_del_directorio_de_tu_proyecto/app.py
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+```
+##9. Recargar los servicios para que linux reconozca el nuevo servicio antes creado:
+```
+sudo systemctl daemon-reload
+sudo systemctl start my-flask-app.service 
+```
+##10. ir a github y crear las credenciales:
+- EC2_PRIVATE_KEY = pega la key generada del rsa
+- EC2_HOST = dirección pública de la instancia de ec2
+- EC2_USER_NAME = al ser ubuntu el usuario se llama igual: ubuntu
